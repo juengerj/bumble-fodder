@@ -9,6 +9,11 @@ itsdangerous==1.1.0
 Jinja2==2.11.0
 MarkupSafe==1.1.1
 passlib==1.7.2
+praw==6.5.1
+prawcore==1.0.1
 requests==2.22.0
+six==1.14.0
+update-checker==0.16
 urllib3==1.25.8
+websocket-client==0.57.0
 Werkzeug==0.16.1
