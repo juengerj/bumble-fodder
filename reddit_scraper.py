@@ -24,9 +24,13 @@ class Reddit:
         self.submission = self.reddit.subreddit(subreddit).hot(limit=5)
 
     def get_post_details(self, *args):
+        urls = []
         for i in self.submission:
             for j in args:
-                print(getattr(i, j))
+                #print(getattr(i, j))
+                urls.append(getattr(i, j))
+
+        return urls
 
 my_reddit = Reddit('credentials.txt')
 my_reddit.get_submissions('askreddit')
