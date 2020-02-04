@@ -11,4 +11,3 @@ pip install -r requirements.txt
 python app.py
 
 Browse to flipx.engr.oregonstate.edu:5000/ to view (x is the flip server you run 'python app.py' from)
-

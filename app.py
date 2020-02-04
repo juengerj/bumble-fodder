@@ -7,14 +7,20 @@ import reddit_scraper
 app = Flask(__name__, static_folder='static')
 
 my_reddit = reddit_scraper.Reddit('credentials.txt')
-my_reddit.get_submissions('askreddit')
 
 
 @app.route('/', methods=['GET'])
 def get_urls():
-    return str(my_reddit.get_post_details('url'))
+    subreddit = request.args.get('subreddit')
+    if subreddit:
+        my_reddit.get_submissions(subreddit)
+    else:
+        my_reddit.get_submissions('dogswithjobs')
+    results = str(my_reddit.get_post_details('url', 'thumbnail'))
+    print(results)
+    return results
 
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port='23234')

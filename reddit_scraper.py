@@ -30,8 +30,9 @@ class Reddit:
                 #print(getattr(i, j))
                 urls.append(getattr(i, j))
 
+        # print(urls)
         return urls
 
-my_reddit = Reddit('credentials.txt')
-my_reddit.get_submissions('askreddit')
-my_reddit.get_post_details('url', 'thumbnail')
+# my_reddit = Reddit('credentials.txt')
+# my_reddit.get_submissions('dogswithjobs')
+# my_reddit.get_post_details('url', 'thumbnail')
