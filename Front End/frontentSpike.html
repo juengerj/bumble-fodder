@@ -16,15 +16,33 @@
 <body>
   <div>
     <h1 class="mt-5">Welcome to Bumble Fodder</h1>
+      <p class="info-text">Add up to 5 subreddits to scrape</p>
   </div>
   <div class="container d-flex justify-content-center">
     <form class="form-inline mt-5" id="subRedditForm">
       <div class="form-group">
-        <label for="enterSubreddit" class="">reddit.com/r/</label>
-        <input type="text" class="form-control" id="enteredSubreddit" placeholder="OSU4U">
+          <ol>
+              <li><label for="enterSubreddit" class="reddit-entry">reddit.com/r/
+                  <input type="text" class="form-control" id="enteredSubreddit1" placeholder="OSU4U" required></label>
+              </li>
+              <li><label for="enterSubreddit" class="reddit-entry">reddit.com/r/
+                  <input type="text" class="form-control" id="enteredSubreddit1" placeholder="OSU4U"></label>
+              </li>
+              <li><label for="enterSubreddit" class="reddit-entry">reddit.com/r/
+                  <input type="text" class="form-control" id="enteredSubreddit1" placeholder="OSU4U"></label>
+              </li>
+              <li><label for="enterSubreddit" class="reddit-entry">reddit.com/r/
+                  <input type="text" class="form-control" id="enteredSubreddit1" placeholder="OSU4U"></label>
+              </li>
+              <li><label for="enterSubreddit" class="reddit-entry">reddit.com/r/
+                  <input type="text" class="form-control" id="enteredSubreddit1" placeholder="OSU4U"></label>
+              </li>
+          </ol>
       </div>
-      <button type="button" class="btn btn-primary" onclick="addSubreddit()">Start Scraping</button>
     </form>
+    <button type="button" class="btn btn-primary" onclick="addSubreddit()">Start Scraping</button>
+    </form>
+
   </div>
   <div id="containersOfSubreddits">
     <!-- add scrapped material here -->
