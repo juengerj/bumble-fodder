@@ -1,2 +1,10 @@
 /venv
 credentials.txt
+
+*.xml
+
+*.iml
+
+*.pyc
+
+.DS_Store
