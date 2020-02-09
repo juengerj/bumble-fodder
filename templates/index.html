@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for result in results %}
+<div class="added2Page">
+    <div id={{result}}>
+        {{result}}
+    </div>
+    <div>
+        <button class="btn btn-danger">DELETE</button>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
