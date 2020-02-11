@@ -7,7 +7,7 @@
         <img src="{{thing.thumbnail}}" alt="">{{thing.url}}
     </div>
     <div>
-        <button class="btn btn-danger" onclick=IsConnected()>DELETE</button>
+        <button class="btn btn-danger" onclick=removeElement("{{thing.id}}")>DELETE</button>
     </div>
 </div>
 {% endfor %}
