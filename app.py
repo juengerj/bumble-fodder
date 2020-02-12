@@ -12,25 +12,44 @@ my_reddit = reddit_scraper.Reddit.get_instance()
 
 @app.route('/', methods=['GET'])
 def get_urls():
-    subreddit = request.args.get('subreddit')
+    
+    subreddits = []
+    results = []
+    urlsGoHere = []
+    thumbnailsGoHere = []
+    
+    for x in range(5):
+        subreddits.append(request.args.get('subreddit' + str(x)))
+        if subreddits[x]:
+            my_reddit.get_submissions(subreddits[x])
+            results.append(my_reddit.get_post_details('url', 'thumbnail'))
+            urlsGoHere.append(results[x][::2])
+            thumbnailsGoHere.append(results[x][1::2])
+            print(thumbnailsGoHere[x])
+        else:
+            my_reddit.get_submissions('dogswithjobs')
+            results.append(my_reddit.get_post_details('url', 'thumbnail'))
+            urlsGoHere.append(results[x][::2])
+            thumbnailsGoHere.append(results[x][1::2])
+        
     # print("Getting subreddit", file=sys.stdout)
-    if subreddit:
-        my_reddit.get_submissions(subreddit)
-    else:
-        my_reddit.get_submissions('dogswithjobs')
+    # if subreddit:
+        # my_reddit.get_submissions(subreddit)
+    # else:
+        # my_reddit.get_submissions('dogswithjobs')
     
     # print("storing subreddit", file=sys.stdout)
     
-    results = my_reddit.get_post_details('url', 'thumbnail')
-    urlsGoHere=results[::2]
-    thumbnailsGoHere=results[1::2]
+    # results = my_reddit.get_post_details('url', 'thumbnail') 
     # data={'urls':urlsGoHere, 'thumbnails':thumbnailsGoHere,'ids':idsGoHere}
-    data = []
-    for i in range(0,5):
-        data.append({'thumbnail':thumbnailsGoHere[i],'url':urlsGoHere[i],'id':i})
+    data = [[] for i in range(5)]
+    
+    for x in range(5):
+        for i in range(3):
+            data[x].append({'thumbnail':thumbnailsGoHere[x][i],'url':urlsGoHere[x][i],'id':str(x)+str(i)})
     # return results
     # results = str(['fish','pony','hip','hop','hip-hop-a-bottom-us'])
-
+    print(data)
     return render_template('index.html', data=data)
 
 # @app.route('/top5', methods=['GET'])
