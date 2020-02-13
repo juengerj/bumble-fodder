@@ -1,17 +1,15 @@
 import praw
 
-# Get attributes of submission object
-#attributes = next(submission).__dict__.keys()
-
-# Get next submission object from listing generator
-#first_post = next(submission)
-
 
 class Reddit:
 
     def __init__(self, credentials):
         self.reddit = None
         self.submission = None
+        self.logfile = None
+
+        with open('log.txt', 'a') as logfile:
+            self.logfile = logfile
 
         with open(credentials, 'r') as infile:
             creds = infile.read().splitlines()
@@ -21,18 +19,15 @@ class Reddit:
                                     username=creds[2])
 
     def get_submissions(self, subreddit):
-        self.submission = self.reddit.subreddit(subreddit).hot(limit=5)
+        try:
+            self.submission = self.reddit.subreddit(subreddit).hot(limit=5)
+        except Exception as e:
+            self.logfile.write('Get submission error: %s' % e)
 
     def get_post_details(self, *args):
         urls = []
         for i in self.submission:
             for j in args:
-                #print(getattr(i, j))
                 urls.append(getattr(i, j))
 
-        # print(urls)
         return urls
-
-# my_reddit = Reddit('credentials.txt')
-# my_reddit.get_submissions('dogswithjobs')
-# my_reddit.get_post_details('url', 'thumbnail')
