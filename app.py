@@ -1,10 +1,14 @@
+import os
 from flask import Flask, request, session
 #from flask_httpauth import HTTPBasicAuth
-#from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 #from passlib.apps import custom_app_context as pwd_context
 import reddit_scraper
 
 app = Flask(__name__, static_folder='static')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user_db.sqlite'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 my_reddit = reddit_scraper.Reddit('credentials.txt')
 
@@ -22,5 +26,7 @@ def get_urls():
 
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run(host='0.0.0.0', port='23234')
+#	if not os.path.exists('user_db.sqlite'):
+#		db.create_all()
+	app.debug = True
+	app.run(host='0.0.0.0', port='23234')
