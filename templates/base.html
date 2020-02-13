@@ -23,11 +23,23 @@
     <form class="form-inline mt-5" id="subRedditForm" action="http://flip3.engr.oregonstate.edu:4799/" method="get">
       <div class="form-group">
         <label for="getSubreddit">reddit.com/r/</label>
-        <input class="form-control" type="text" id="getSubreddit" name="subreddit0" placeholder="OSU4U"/>  
-        <input class="form-control" type="text" id="getSubreddit" name="subreddit1" placeholder="OSU4U"/>  
-        <input class="form-control" type="text" id="getSubreddit" name="subreddit2" placeholder="OSU4U"/>  
-        <input class="form-control" type="text" id="getSubreddit" name="subreddit3" placeholder="OSU4U"/>  
-        <input class="form-control" type="text" id="getSubreddit" name="subreddit4" placeholder="OSU4U"/>  
+          <ol>
+            <li><label for="getSubreddit" class="reddit-entry">
+                  <input type="text" class="form-control" id="getSubreddit1" name="subreddit0" placeholder="OSU4U" required></label>
+              </li>
+              <li><label for="getSubreddit" class="reddit-entry">
+                  <input type="text" class="form-control" id="getSubreddit1" name="subreddit1" placeholder="OSU4U"></label>
+              </li>
+              <li><label for="getSubreddit" class="reddit-entry">
+                  <input type="text" class="form-control" id="getSubreddit1" name="subreddit2 placeholder="OSU4U"></label>
+              </li>
+              <li><label for="getSubreddit" class="reddit-entry">
+                  <input type="text" class="form-control" id="getSubreddit1" name="subreddit3" placeholder="OSU4U"></label>
+              </li>
+              <li>
+                  <input type="text" class="form-control" id="getSubreddit1" name="subreddit4" placeholder="OSU4U"></label>
+                </li>
+              </ol>
       </div>
       <!-- <button class="btn btn-secondary" onclick=addSubreddit()>Add Subreddit</button> -->
       <button class="btn btn-primary" type="Submit">Start Scraping</button>
@@ -52,3 +64,4 @@
 </body>
 
 </html>
+              

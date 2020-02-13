@@ -1,2 +1,8 @@
 /venv
 credentials.txt
+
+# Mac and PyCharm files
+*.xml
+*.iml
+*.pyc
+.DS_Store

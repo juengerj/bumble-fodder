@@ -6,3 +6,20 @@ div {
   margin-left:auto;
   margin-right: auto;
 }
+
+.info-text
+{
+  text-align: center;
+}
+
+.form-group
+{
+  padding-right: 30px;
+}
+
+button
+{
+  height: 100px;
+  vertical-align: center;
+  align-self: center;
+}
