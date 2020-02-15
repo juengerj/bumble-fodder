@@ -1,0 +1,124 @@
+{% extends "base2.html" %}
+
+{% block content %}
+<h4 class="display-4">{{subreddit}}</h4>
+<div class="added2Page container" id="subredditContainer">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">
+          Title
+        </th>
+        <th scope="col">
+          # of Comments
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for thing in data%}
+      <tr id="{{ thing.index }}">
+        <td>
+          {{ thing.title }}
+        </td>
+        <td>
+          {{ thing.total_comments }}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div>
+  <h4 class="display-4"> Bar Graph </h4>
+  <canvas id="barChart" width="600" height="400"></canvas>
+  <p id="barChartCaption">Yay!!! Bar Graphs!!!!!</p>
+  <script>
+    Chart.defaults.global.responsive = false;
+    //set up chart data
+    var chartData = {
+      labels : [{% for item in labels %}
+      "{{item}}",
+      {% endfor %}],
+      datasets : [{
+        label: '{{ legend }}',
+        data : [{% for item in values %}
+        {{item}},
+        {% endfor %}]
+      }]
+    }
+    // set up chart location
+    var ctx = document.getElementById('barChart').getContext('2d');
+
+    // create chart
+    var barChart = new Chart(ctx, {
+      type: 'bar',
+      data: chartData,
+    });
+
+  </script>
+</div>
+<div>
+  <h4 class="display-4"> Pie Chart </h4>
+  <canvas id="pieChart" width="600" height="400"></canvas>
+  <p id="pieChartCaption">Yay!!! Pie Charts!!!!!</p>
+  <script>
+    Chart.defaults.global.responsive = false;
+    //set up chart data
+    var chartData = {
+      labels : [{% for item in labels %}
+      "{{item}}",
+      {% endfor %}],
+      datasets : [{
+        label: '{{ legend }}',
+        data : [{% for item in values %}
+        {{item}},
+        {% endfor %}]
+      }]
+    }
+    // set up chart location
+    var ctx = document.getElementById('pieChart').getContext('2d');
+
+    // create chart
+    var pieChart = new Chart(ctx, {
+      type: 'pie',
+      data: chartData,
+    });
+
+  </script>
+</div>
+<div>
+  <h4 class="display-4"> line Graph </h4>
+  <canvas id="lineChart" width="600" height="400"></canvas>
+  <p id="lineChartCaption">Yay!!! Line Graphs!!!!!</p>
+  <script>
+    Chart.defaults.global.responsive = false;
+    //set up chart data
+    var chartData = {
+      labels : [{% for item in labels %}
+      "{{item}}",
+      {% endfor %}],
+      datasets : [{
+        label: '{{ legend }}',
+        data : [{% for item in values %}
+        {{item}},
+        {% endfor %}]
+      }]
+    }
+    // set up chart location
+    var ctx = document.getElementById('lineChart').getContext('2d');
+
+    // create chart
+    var lineChart = new Chart(ctx, {
+      type: 'line',
+      data: chartData,
+    });
+
+  </script>
+</div>
+
+
+</div>
+
+
+
+{% endblock %}
