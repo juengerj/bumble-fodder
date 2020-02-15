@@ -1,14 +1,14 @@
 import praw
 
+
 # Get attributes of submission object
-#attributes = next(submission).__dict__.keys()
+# attributes = next(submission).__dict__.keys()
 
 # Get next submission object from listing generator
-#first_post = next(submission)
+# first_post = next(submission)
 
 
 class Reddit:
-
     __instance = None
 
     @staticmethod
@@ -31,8 +31,8 @@ class Reddit:
             creds = infile.read().splitlines()
 
         self.reddit = praw.Reddit(client_id=creds[0], client_secret=creds[1],
-                                    password=creds[3], user_agent='scrapeSpike by bestaccountantevar',
-                                    username=creds[2])
+                                  password=creds[3], user_agent='scrapeSpike by bestaccountantevar',
+                                  username=creds[2])
 
     def get_submissions(self, subreddit):
         self.submission = self.reddit.subreddit(subreddit).hot(limit=5)
@@ -41,7 +41,7 @@ class Reddit:
         urls = []
         for i in self.submission:
             for j in args:
-                #print(getattr(i, j))
+                # print(getattr(i, j))
                 urls.append(getattr(i, j))
 
         # print(urls)
