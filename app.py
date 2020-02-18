@@ -39,7 +39,7 @@ def check_sub_exists(subreddit):
     # Resource: https://www.reddit.com/r/redditdev/comments/68dhpm/praw_best_way_to_check_if_subreddit_exists_from/
     exists = True
     try:
-        my_reddit.subreddit.search_by_name(subreddit, exact=True)   # TODO: figure out error here
+        my_reddit.subreddits.search_by_name(subreddit, exact=True)   # TODO: figure out error here
     except NotFound:
         exists = False
     return exists
