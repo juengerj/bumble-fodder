@@ -1,10 +1,10 @@
-import os
-from flask import Flask, request, session, render_template
+from flask import Flask, request, render_template
 # from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
+
 # from passlib.apps import custom_app_context as pwd_context
 import reddit_scraper
-from prawcore import NotFound
+import consts
 
 app = Flask(__name__, static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user_db.sqlite'
@@ -106,6 +106,6 @@ def get_urls():
 
 if __name__ == '__main__':
     # if not os.path.exists('user_db.sqlite'):
-    #     db.create_all()
+    # 	db.create_all()
     app.debug = True
-    app.run(host='0.0.0.0', port='23234')
+    app.run(host=consts.HOST, port=consts.PORT)

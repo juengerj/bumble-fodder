@@ -1,4 +1,5 @@
 import praw
+import consts
 
 
 # Get attributes of submission object
@@ -35,7 +36,7 @@ class Reddit:
                                   username=creds[2])
 
     def get_submissions(self, subreddit):
-        self.submission = self.reddit.subreddit(subreddit).hot(limit=5)
+        self.submission = self.reddit.subreddit(subreddit).hot(limit=consts.NUM_SUBS)
 
     def get_post_details(self, *args):
         urls = []
