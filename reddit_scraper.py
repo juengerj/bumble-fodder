@@ -48,6 +48,22 @@ class Reddit:
         # print(urls)
         return urls
 
+class Subreddits:   #TODO: I doubt this will work but this is the idea. Initialize a Subreddits PRAWModel instance. Ref: https://praw.readthedocs.io/en/latest/code_overview/reddit/subreddits.html
+    __instance = None
+    
+    @staticmethod
+    def get_instance():
+        if Subreddits.__instance == None:
+            Subreddits(Reddit)
+        return Subreddits.__instance
+    
+    def __init__(self):
+        if Subreddits.__instance != None:
+            raise Exception("Error: class is a singleton and object %s exists" % Reddit.__instance)
+        else:
+            Subreddits.__instance = self
+
+
 # my_reddit = Reddit('credentials.txt')
 # my_reddit.get_submissions('dogswithjobs')
 # my_reddit.get_post_details('url', 'thumbnail')
