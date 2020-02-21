@@ -1,8 +1,12 @@
-from flask import Flask, request, render_template, flash
-# from flask_httpauth import HTTPBasicAuth
+import pprint
+
+from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 # from passlib.apps import custom_app_context as pwd_context
+
+from prawcore import NotFound
+
 import reddit_scraper
 import consts
 
@@ -20,42 +24,35 @@ def check_valid_num(subreddit_list):
     if (len(subreddit_list) > consts.NUM_SUBS) or (len(subreddit_list) <= 0):
         error = "Invalid number of subreddits"
         print(error)
-        return False                       # TODO: render error message in index.html
-    return True
-
-
-def check_subreddits(subreddit_list):
-    error = None
-    for sub in range(len(subreddit_list)):
-        # print(subreddit_list[sub])
-        # exists = check_sub_exists(subreddit_list[sub])
-        exists = True
-        if not exists:
-            print("Oh no, that subreddit does not exist")           # TODO: render error message in index.html
-            return False
-
+        return False
     return True
 
 
 def check_sub_exists(subreddit):
     # Resource: https://www.reddit.com/r/redditdev/comments/68dhpm/praw_best_way_to_check_if_subreddit_exists_from/
-    exists = True
-    # try:
-    #     my_reddit.subreddits.search_by_name(subreddit, exact=True)   # TODO: figure out error here
-    # except NotFound:
-    #     exists = False
-    return exists
+
+    # my_reddit.subreddits(subreddit).search_by_name(subreddit, exact=True)   # TODO: figure out error here
+    current = my_reddit.reddit.subreddit(subreddit)
+    # print(current.title)                                                      # make non-lazy (i.e., fetch from API)
+    pprint.pprint(vars(current))
+
+    invalid = my_reddit.reddit.subreddit('dogswithjobsandcatswithknivesthiscantberealright')
+    # print(current.title)  # make non-lazy (i.e., fetch from API)
+
+    if current.display_name is subreddit:
+        print("It's a match!")
 
 
 @app.route('/', methods=['GET'])
 def get_urls():
     subreddits = []                                                     # Test with invalid number
     # subreddits = ["aww", "aww", "aww", "aww", "aww", "aww"]           # Test with invalid number
+    subreddits = ["aww", "aww"]
     results = []
     urlsGoHere = []
     thumbnailsGoHere = []
 
-    enough = check_valid_num(subreddits)            # TODO: move error checking so after subs added to subreddits list
+    enough = check_valid_num(subreddits)  # TODO: move error checking so after subs added to subreddits list
     if not enough:
         error = "Invalid number of subreddits.\nPlease enter between 1 and 5 subreddits."
         return render_template('index.html', error=error)
@@ -64,6 +61,7 @@ def get_urls():
     for x in range(consts.NUM_SUBS):
         subreddits.append(request.args.get('subreddit' + str(x)))
         if subreddits[x]:
+            print("checking new sub")
             if check_sub_exists(subreddits[x]):
                 print("Valid subreddit name!")
                 my_reddit.get_submissions(subreddits[x])
@@ -72,7 +70,7 @@ def get_urls():
                 thumbnailsGoHere.append(results[x][1::2])
                 print(thumbnailsGoHere[x])
             else:
-                print("Oh no, invalid subreddit")                   # TODO: render error message in index.html
+                print("Oh no, invalid subreddit")  # TODO: render error message in index.html
         else:
             my_reddit.get_submissions('dogswithjobs')
             results.append(my_reddit.get_post_details('url', 'thumbnail'))
@@ -86,6 +84,7 @@ def get_urls():
             for i in range(consts.NUM_TOP):
                 data[x].append({'thumbnail': thumbnailsGoHere[x][i], 'url': urlsGoHere[x][i], 'id': str(x) + str(i)})
         return render_template('index.html', data=data)
+
 
 
 # @app.route('/top5', methods=['GET'])
