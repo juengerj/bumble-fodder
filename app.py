@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, flash
 # from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
 
@@ -11,23 +11,25 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user_db.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-NUM_SUBREDDITS = 5
-NUM_TOP_POSTS = 3
 # my_reddit = reddit_scraper.Reddit('credentials.txt')
 my_reddit = reddit_scraper.Reddit.get_instance()
 
 
 def check_valid_num(subreddit_list):
     print(f"Len subreddits: {len(subreddit_list)}")
-    if (len(subreddit_list) > NUM_SUBREDDITS) or (len(subreddit_list) <= 0):
-        print("Error: invalid number of subreddits selected")
-        return render_template('index.html')                        # TODO: render error message in index.html
+    if (len(subreddit_list) > consts.NUM_SUBS) or (len(subreddit_list) <= 0):
+        error = "Invalid number of subreddits"
+        print(error)
+        return False                       # TODO: render error message in index.html
+    return True
 
 
 def check_subreddits(subreddit_list):
+    error = None
     for sub in range(len(subreddit_list)):
-        print(subreddit_list[sub])
-        exists = check_sub_exists(subreddit_list[sub])
+        # print(subreddit_list[sub])
+        # exists = check_sub_exists(subreddit_list[sub])
+        exists = True
         if not exists:
             print("Oh no, that subreddit does not exist")           # TODO: render error message in index.html
             return False
@@ -38,25 +40,28 @@ def check_subreddits(subreddit_list):
 def check_sub_exists(subreddit):
     # Resource: https://www.reddit.com/r/redditdev/comments/68dhpm/praw_best_way_to_check_if_subreddit_exists_from/
     exists = True
-    try:
-        my_reddit.subreddits.search_by_name(subreddit, exact=True)   # TODO: figure out error here
-    except NotFound:
-        exists = False
+    # try:
+    #     my_reddit.subreddits.search_by_name(subreddit, exact=True)   # TODO: figure out error here
+    # except NotFound:
+    #     exists = False
     return exists
 
 
 @app.route('/', methods=['GET'])
 def get_urls():
-    subreddits = []
+    subreddits = []                                                     # Test with invalid number
+    # subreddits = ["aww", "aww", "aww", "aww", "aww", "aww"]           # Test with invalid number
     results = []
     urlsGoHere = []
     thumbnailsGoHere = []
 
-    check_valid_num(subreddits)
-    # check_subreddits(subreddits)
+    enough = check_valid_num(subreddits)            # TODO: move error checking so after subs added to subreddits list
+    if not enough:
+        error = "Invalid number of subreddits.\nPlease enter between 1 and 5 subreddits."
+        return render_template('index.html', error=error)
 
     # print("Valid number of subreddits")
-    for x in range(NUM_SUBREDDITS):
+    for x in range(consts.NUM_SUBS):
         subreddits.append(request.args.get('subreddit' + str(x)))
         if subreddits[x]:
             if check_sub_exists(subreddits[x]):
@@ -74,26 +79,13 @@ def get_urls():
             urlsGoHere.append(results[x][::2])
             thumbnailsGoHere.append(results[x][1::2])
 
-        # print("Getting subreddit", file=sys.stdout)
-        # if subreddit:
-        # my_reddit.get_submissions(subreddit)
-        # else:
-        # my_reddit.get_submissions('dogswithjobs')
+            data = [[] for i in range(consts.NUM_SUBS)]
+            # print(data)
 
-        # print("storing subreddit", file=sys.stdout)
-
-        # results = my_reddit.get_post_details('url', 'thumbnail')
-        # data={'urls':urlsGoHere, 'thumbnails':thumbnailsGoHere,'ids':idsGoHere}
-        data = [[] for i in range(NUM_SUBREDDITS)]
-        print(data)
-
-    for x in range(NUM_SUBREDDITS):
-        for i in range(NUM_TOP_POSTS):
-            data[x].append({'thumbnail': thumbnailsGoHere[x][i], 'url': urlsGoHere[x][i], 'id': str(x) + str(i)})
-    # return results
-    # results = str(['fish','pony','hip','hop','hip-hop-a-bottom-us'])
-    print(data)
-    return render_template('index.html', data=data)
+        for x in range(consts.NUM_SUBS):
+            for i in range(consts.NUM_TOP):
+                data[x].append({'thumbnail': thumbnailsGoHere[x][i], 'url': urlsGoHere[x][i], 'id': str(x) + str(i)})
+        return render_template('index.html', data=data)
 
 
 # @app.route('/top5', methods=['GET'])

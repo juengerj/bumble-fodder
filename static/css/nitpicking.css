@@ -17,6 +17,14 @@ div {
   padding-right: 30px;
 }
 
+.error
+{
+  color: #9C1A1C;
+  font-weight: bold;
+  text-align: center;
+  font-size: x-large;
+}
+
 button
 {
   height: 100px;
