@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, render_template, flash, redirect, url_for
 from flask_login import UserMixin, LoginManager, login_user, logout_user, current_user, login_required
 from forms import LoginForm, RegisterForm
@@ -5,38 +6,21 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.urls import url_parse
 
 # from flask_httpauth import HTTPBasicAuth
-from flask_sqlalchemy import SQLAlchemy
+#from flask_sqlalchemy import SQLAlchemy
 
 # from passlib.apps import custom_app_context as pwd_context
 import reddit_scraper
 import consts
+from model import db, User, Subreddit, UserSubreddit
 
 app = Flask(__name__, static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user_db.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = "we are great"
 
-db = SQLAlchemy(app)
+db.init_app(app)
 login = LoginManager(app)
-# login.init_app(app)
 login.login_view = "login"
-
-class User(UserMixin, db.Model):
-    __tablename__ = 'user'
-
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
-
-    def __repr__(self):
-        return '<User {}>'.format(self.username)
-
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
 
 @login.user_loader
 def load_user(id):
@@ -56,7 +40,11 @@ def index():
 
     if (request.args.get('user')):
         user = request.args.get('user')
-        print(user)
+        # print(user)
+        user_subreddits = UserSubreddit.get_user_subreddits(user)
+        for i in user_subreddits:
+            subreddit_name = Subreddit.get_subreddit_by_id(i.subreddit_id).name
+            subreddits.append(subreddit_name)
 
     for x in range(consts.NUM_SUBS):
         subreddits.append(request.args.get('subreddit' + str(x)))
@@ -65,7 +53,7 @@ def index():
             results.append(my_reddit.get_post_details('url', 'thumbnail'))
             urlsGoHere.append(results[x][::2])
             thumbnailsGoHere.append(results[x][1::2])
-            print(thumbnailsGoHere[x])
+            #print(thumbnailsGoHere[x])
         else:
             my_reddit.get_submissions('dogswithjobs')
             results.append(my_reddit.get_post_details('url', 'thumbnail'))
@@ -89,7 +77,7 @@ def index():
             data[x].append({'thumbnail': thumbnailsGoHere[x][i], 'url': urlsGoHere[x][i], 'id': str(x) + str(i)})
     # return results
     # results = str(['fish','pony','hip','hop','hip-hop-a-bottom-us'])
-    print(data)
+    # print(data)
     return render_template('index.html', data=data)
 
 
@@ -153,7 +141,8 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    # if not os.path.exists('user_db.sqlite'):
-    # 	db.create_all()
+    if not os.path.exists('user_db.sqlite'):
+        with app.app_context():
+            db.create_all()
     app.debug = True
     app.run(host=consts.HOST, port=consts.PORT)
