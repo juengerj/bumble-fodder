@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, flash, redirect, url_for
 from flask_login import UserMixin, LoginManager, login_user, logout_user, current_user, login_required
 from forms import LoginForm
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.urls import url_parse
 
 # from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
@@ -17,7 +18,7 @@ app.config['SECRET_KEY'] = "we are great"
 
 db = SQLAlchemy(app)
 login = LoginManager(app)
-login.init_app(app)
+# login.init_app(app)
 login.login_view = "login"
 
 class User(UserMixin, db.Model):
@@ -46,11 +47,16 @@ my_reddit = reddit_scraper.Reddit.get_instance()
 
 
 @app.route('/', methods=['GET'])
-def get_urls():
+@app.route('/index')
+def index():
     subreddits = []
     results = []
     urlsGoHere = []
     thumbnailsGoHere = []
+
+    if (request.args.get('user')):
+        user = request.args.get('user')
+        print(user)
 
     for x in range(consts.NUM_SUBS):
         subreddits.append(request.args.get('subreddit' + str(x)))
@@ -100,17 +106,32 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = LoginForm()
+    print(form)
+    print("before validate")
     if form.validate_on_submit():
+        print("after validate")
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
-        login_user(user, remember=form.remember_me.data)
+        login_user(user)
         next_page = request.args.get('next')
-        # if not next_page or url_parse(next_page).netloc != '':
-        #     next_page = url_for('index')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('index', user=user.username)
         return redirect(next_page)
-    return render_template('login.html', title='Sign In', form=form)
+    return render_template('login.html', form=form)
+
+@app.route('/secret')
+@login_required
+def secret():
+    if current_user.is_authenticated:
+        return render_template('secret.html')
+    return render_template('login.html')
+    
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     # if not os.path.exists('user_db.sqlite'):

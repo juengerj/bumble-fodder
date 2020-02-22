@@ -11,6 +11,7 @@
 {% endwith %}
 
 <form action = "" method="post" novalidate>
+    {{ form.hidden_tag() }}
 <p>
     {{ form.username.label }}<br>
     {{ form.username(size=26) }}<br>
