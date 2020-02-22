@@ -149,18 +149,8 @@ def secret():
 @app.route('/logout')
 def logout():
     logout_user()
+    flash('You have been logged out.')
     return redirect(url_for('index'))
-
-
-def validate_username(self, username):
-    user = User.query.filter_by(username=username.data).first()
-    if user is not None:
-        raise ValidationError('Please use a different username.')
-
-def validate_email(self, email):
-    user = User.query.filter_by(email=email.data).first()
-    if user is not None:
-        raise ValidationError('Please use a different email address.')
 
 if __name__ == '__main__':
     # if not os.path.exists('user_db.sqlite'):
