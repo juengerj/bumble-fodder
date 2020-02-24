@@ -1,19 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% for thing in data%}
-<div class="added2Page" id="{{thing.id}}">
-    <div>
-        <img src="{{thing.thumbnail}}" alt="">{{thing.url}}
-    </div>
-    <div>
-        <button class="btn btn-danger" onclick=removeElement("{{thing.id}}")>DELETE</button>
-    </div>
-</div>
-{% endfor %}
-{% for transform in transformed %}
-<div>
-    {{transform}}
-</div>
-{% endfor %}
+    {% if error %}
+        <p class=error><strong>Error:</strong> {{ error }}
+
+    {% else %}
+        {% for things in data%}
+            {% for thing in things%}
+                <div class="added2Page" id="{{thing.id}}">
+                <div>
+                    <img src="{{thing.thumbnail}}" alt="">{{thing.url}}
+                </div>
+                <div>
+                    <button class="btn btn-danger" onclick=removeElement("{{thing.id}}")>DELETE</button>
+                </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+
+        {% for transform in transformed %}
+            <div>
+                {{transform}}
+            </div>
+        {% endfor %}
+    {% endif %}
+
 {% endblock %}
