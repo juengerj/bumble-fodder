@@ -1,12 +1,12 @@
 import os
+from flask_login import UserMixin
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from app import db
+#from app import db
 
+db = SQLAlchemy()
 
-# from flask_login import UserMixin
-
-
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -74,6 +74,10 @@ class Subreddit(db.Model):
     def get_subreddit(subreddit_name):
         return Subreddit().query.filter_by(name=subreddit_name).first()
 
+    @staticmethod
+    def get_subreddit_by_id(sub_id):
+        return Subreddit().query.filter_by(id=sub_id).first()
+
     def add_subreddit(self):
         db.session.add(self)
         db.session.commit()
@@ -96,21 +100,26 @@ class UserSubreddit(db.Model):
 
         return user_subreddit_list
 
+    @staticmethod
+    def get_user_subreddits(username):
+        user_subreddits = UserSubreddit().query.filter_by(user_id=User().get_user(username).id).all()
+        return user_subreddits
 
-if __name__ == '__main__':
-    if not os.path.exists('user_db.sqlite'):
-        db.create_all()
-    # new_user = User(username='john')
-    # new_user.add_user('doe')
-    # new_user1 = User(username='jane')
-    # new_user1.add_user('doe')
-    # new_subreddit = Subreddit(name='dogswithjobs')
-    # new_subreddit.add_subreddit()
-    print(User.list_users())
-    print(User.get_user('john').id)
-    print(Subreddit.list_subreddits())
-    print(Subreddit.get_subreddit('dogswithjobs').id)
-    # User.add_user_subreddit('john', 'dogswithjobs')
-    subs = UserSubreddit.list_user_subreddit_mappings()
-    for i in subs:
-        print('User %s has subreddit %s' % (i.user_id, i.subreddit_id))
+#if __name__ == '__main__':
+#    if not os.path.exists('user_db.sqlite'):
+#        db.create_all()
+#    new_user = User(username='john')
+#    new_user.add_user('doe')
+#    new_user1 = User(username='jane')
+#    new_user1.add_user('doe')
+#    new_subreddit = Subreddit(name='dogswithjobs')
+#    new_subreddit.add_subreddit()
+#    print(User.list_users())
+#    print(User.get_user('john').id)
+#    print(Subreddit.list_subreddits())
+#    print(Subreddit.get_subreddit('dogswithjobs').id)
+#    User.add_user_subreddit('john', 'dogswithjobs')
+#    with app.app_context():
+#        subs = UserSubreddit.list_user_subreddit_mappings()
+#        for i in subs:
+#            print('User %s has subreddit %s' % (i.user_id, i.subreddit_id))
