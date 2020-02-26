@@ -59,17 +59,10 @@ def check_sub_exists(sub_name):
 @app.route('/', methods=['GET'])
 @app.route('/index')
 def index():
-    # subreddits = []                                                   # Test with invalid number
-    # subreddits = ["aww", "aww", "aww", "aww", "aww", "aww"]           # Test with invalid number
-    subreddits = ["aww", "aww"]
+    subreddits = []
     results = []
     urlsGoHere = []
     thumbnailsGoHere = []
-
-    enough = check_valid_num(subreddits)  # TODO: move error checking so after subs actually added to subreddits list
-    if not enough:
-        error = "Invalid number of subreddits.\nPlease enter between 1 and 5 subreddits."
-        return render_template('index.html', error=error)
 
     # print("Valid number of subreddits")
     if request.args.get('user'):
@@ -82,34 +75,32 @@ def index():
 
     for x in range(consts.NUM_SUBS):
         subreddits.append(request.args.get('subreddit' + str(x)))
+        
+        enough = check_valid_num(subreddits)  # TODO: move error checking so after subs actually added to subreddits list
+        if not enough:
+            error = "Invalid number of subreddits.\nPlease enter between 1 and 5 subreddits."
+            return render_template('index.html', error=error)
+
         if subreddits[x]:
-            my_reddit.get_submissions(subreddits[x])
-            results.append(my_reddit.get_post_details('url', 'thumbnail'))
-            urlsGoHere.append(results[x][::2])
-            thumbnailsGoHere.append(results[x][1::2])
-            # print(thumbnailsGoHere[x])
             print("checking new sub")
+
             if check_sub_exists(subreddits[x]):
                 print("Valid subreddit name!")
                 my_reddit.get_submissions(subreddits[x])
                 results.append(my_reddit.get_post_details('url', 'thumbnail'))
                 urlsGoHere.append(results[x][::2])
                 thumbnailsGoHere.append(results[x][1::2])
-                # print(thumbnailsGoHere[x])
             else:
                 print("Oh no, invalid subreddit")  # TODO: render error message in index.html
-        else:
-            my_reddit.get_submissions('dogswithjobs')
-            results.append(my_reddit.get_post_details('url', 'thumbnail'))
-            urlsGoHere.append(results[x][::2])
-            thumbnailsGoHere.append(results[x][1::2])
 
-            data = [[] for i in range(consts.NUM_SUBS)]
-            # print(data)
+    data = [[] for i in range(consts.NUM_SUBS)]
+    # print(data)
 
     for x in range(consts.NUM_SUBS):
-        for i in range(consts.NUM_TOP):
-            data[x].append({'thumbnail': thumbnailsGoHere[x][i], 'url': urlsGoHere[x][i], 'id': str(x) + str(i)})
+        if (subreddits[x]):
+            data[x] = {'subreddit': subreddits[x], 'data':[]}
+            for i in range(3):
+                data[x]['data'].append({'thumbnail':thumbnailsGoHere[x][i],'url':urlsGoHere[x][i],'id':str(x)+str(i)})
 
     # print(data)
     return render_template('index.html', data=data)

@@ -5,18 +5,28 @@
         <p class=error><strong>Error:</strong> {{ error }}
 
     {% else %}
+    
+        <div class="row justify-content-around">
+        
         {% for things in data%}
-            {% for thing in things%}
-                <div class="added2Page" id="{{thing.id}}">
-                <div>
-                    <img src="{{thing.thumbnail}}" alt="">{{thing.url}}
+
+            {% if things %}
+                <div class="col-md-5 border rounded my-2 p-2" id="{{things.subreddit}}">
+                <h3 class="d-inline">/r/{{things.subreddit}} </h3>
+                <button type = "button" class="btn btn-danger d-inline" onclick=removeElement("{{things.subreddit}}")>DELETE</button>
+                <ul class="list-group list-group-flush">
+
+                {% for thing in things.data%}
+                    <li class="list-group-item" id="{{thing.id}}">
+                        <img src="{{thing.thumbnail}}" alt=""><a href="{{thing.url}}">Link</a>
+                    </li>
+                {% endfor %}
+                </ul>
                 </div>
-                <div>
-                    <button class="btn btn-danger" onclick=removeElement("{{thing.id}}")>DELETE</button>
-                </div>
-                </div>
-            {% endfor %}
+            {% endif %}
         {% endfor %}
+
+        </div>
 
 
         {% for transform in transformed %}
