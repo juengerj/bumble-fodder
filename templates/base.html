@@ -14,8 +14,9 @@
 </head>
 
 <body>
-  <div>
-    <h1 class="mt-5">Bumble-fodder</h1>
+  <div class="mx-auto">
+    <h1 class="mx-auto d-inline p-2">Bumble-fodder</h1>
+    <button class='btn btn-secondary float-right d-inline my-2'>Sign In</button> 
   </div>
 
   {% with messages = get_flashed_messages() %}
@@ -30,7 +31,7 @@
 
   <!-- <div>Microblog: <a href="/index">Home</a></div>
         <hr> -->
-  <div class="container d-flex justify-content-center">
+    <div class="container d-flex justify-content-center">
 	<!-- action is set to an empty string so that it references whatever URL is currently in the address bar -->
     <form class="form-inline mt-5" id="subRedditForm" action="" method="get">
       <div class="form-group">
